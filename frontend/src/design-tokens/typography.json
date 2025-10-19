@@ -1,0 +1,522 @@
+{
+  "text": {
+    "display": {
+      "desktop": {
+        "extrabold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "64px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "800"
+          }
+        }
+      },
+      "tablet": {
+        "extrabold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "48px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "800"
+          }
+        }
+      },
+      "mobile": {
+        "extrabold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "36px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "800"
+          }
+        }
+      }
+    },
+    "h1": {
+      "desktop": {
+        "bold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "48px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "700"
+          }
+        }
+      },
+      "tablet": {
+        "bold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "36px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "700"
+          }
+        }
+      },
+      "mobile": {
+        "bold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "28px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "120%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-1%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "700"
+          }
+        }
+      }
+    },
+    "h2": {
+      "desktop": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "36px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      },
+      "tablet": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "30px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      },
+      "mobile": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "24px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      }
+    },
+    "h3": {
+      "desktop": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "28px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      },
+      "tablet": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "24px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      },
+      "mobile": {
+        "semibold": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "20px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "125%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "600"
+          }
+        }
+      }
+    },
+    "h4": {
+      "desktop": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "22px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      },
+      "tablet": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "20px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      },
+      "mobile": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "EB Garamond"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "18px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "-0.5%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      }
+    },
+    "body": {
+      "desktop": {
+        "regular": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "16px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "150%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "400"
+          }
+        }
+      },
+      "tablet": {
+        "regular": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "15px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "150%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "400"
+          }
+        }
+      },
+      "mobile": {
+        "regular": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "14px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "150%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "400"
+          }
+        }
+      }
+    },
+    "caption": {
+      "desktop": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "12px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0.25%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      },
+      "tablet": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "12px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0.25%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      },
+      "mobile": {
+        "medium": {
+          "fontFamily": {
+            "$type": "fontFamilies",
+            "$value": "Prompt"
+          },
+          "fontSize": {
+            "$type": "fontSizes",
+            "$value": "11px"
+          },
+          "lineHeight": {
+            "$type": "lineHeights",
+            "$value": "130%"
+          },
+          "letterSpacing": {
+            "$type": "letterSpacing",
+            "$value": "0.25%"
+          },
+          "fontWeight": {
+            "$type": "fontWeights",
+            "$value": "500"
+          }
+        }
+      }
+    }
+  }
+}
