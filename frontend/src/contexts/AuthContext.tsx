@@ -50,7 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [isAuthenticated]);
 
   const login = async (password: string): Promise<boolean> => {
+    console.log('🔐 AuthContext: Login attempt initiated');
     try {
+      console.log('🌐 AuthContext: Sending login request to backend');
       const response = await fetch(buildApiUrl(ENDPOINTS.AUTH.VERIFY), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,35 +60,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify({ password }),
       });
 
+      console.log(`📡 AuthContext: Login response received - Status: ${response.status}`);
+      
       if (response.ok) {
+        console.log('✅ AuthContext: Login successful, updating authentication state');
         setIsAuthenticated(true);
         setError(null);
         setLastActivity(Date.now());
+        console.log('🕐 AuthContext: Last activity timestamp updated');
         return true;
       } else {
+        console.warn('❌ AuthContext: Login failed - incorrect password');
         setError('Incorrect password. Please try again.');
         return false;
       }
     } catch (err) {
+      console.error('🚨 AuthContext: Login error:', err);
       setError('Unable to verify password. Please check your connection and try again.');
       return false;
     }
   };
 
   const logout = async () => {
+    console.log('🚪 AuthContext: Logout initiated');
     try {
+      console.log('🌐 AuthContext: Sending logout request to backend');
       // Call backend logout endpoint to clear server-side session
-      await fetch(buildApiUrl(ENDPOINTS.AUTH.LOGOUT), {
+      const response = await fetch(buildApiUrl(ENDPOINTS.AUTH.LOGOUT), {
         method: 'POST',
         credentials: 'include', // Include cookies for session management
       });
+      console.log(`📡 AuthContext: Logout response received - Status: ${response.status}`);
     } catch (err) {
       // Continue with logout even if backend call fails
-      console.warn('Backend logout failed:', err);
+      console.warn('⚠️ AuthContext: Backend logout failed:', err);
     } finally {
       // Always clear frontend state
+      console.log('🧹 AuthContext: Clearing frontend authentication state');
       setIsAuthenticated(false);
       setError(null);
+      console.log('✅ AuthContext: Logout completed');
     }
   };
 

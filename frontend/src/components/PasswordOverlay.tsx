@@ -12,12 +12,21 @@ export const PasswordOverlay = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log('🔐 PasswordOverlay: Login form submitted');
     setIsLoading(true);
     
-    await login(password);
+    console.log('🔑 PasswordOverlay: Attempting login with password length:', password.length);
+    const loginSuccess = await login(password);
+    
+    if (loginSuccess) {
+      console.log('✅ PasswordOverlay: Login successful');
+    } else {
+      console.log('❌ PasswordOverlay: Login failed');
+    }
     
     setIsLoading(false);
     setPassword('');
+    console.log('🧹 PasswordOverlay: Form reset, password cleared');
   };
 
   return (
