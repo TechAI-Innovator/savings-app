@@ -15,9 +15,27 @@ load_dotenv()
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('app.log')
+    ]
 )
 logger = logging.getLogger(__name__)
+
+# Request logging middleware
+@app.before_request
+def log_request_info():
+    """Log incoming requests"""
+    logger.info(f"Request: {request.method} {request.path} from {request.remote_addr}")
+    if request.is_json:
+        logger.debug(f"Request body: {request.get_json()}")
+
+@app.after_request
+def log_response_info(response):
+    """Log outgoing responses"""
+    logger.info(f"Response: {response.status_code} for {request.method} {request.path}")
+    return response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
@@ -73,17 +91,20 @@ def verify_password():
         password = data.get('password', '')
         
         logger.info(f"Login attempt from IP: {request.remote_addr}")
+        logger.debug(f"Password length: {len(password)} characters")
         
         # Get the first (and only) user from database (ID = 1)
+        logger.debug("Querying database for user ID 1")
         user = DBUser.query.get(1)
         
         if not user:
-            logger.error("No user found in database")
+            logger.error("No user found in database - user ID 1 does not exist")
             return jsonify({
                 'success': False,
                 'message': 'Authentication failed'
             }), 401
         
+        logger.debug(f"User found: ID={user.id}, checking password hash")
         # Check password against hash
         if user.check_password(password):
             # Create user session
@@ -91,20 +112,21 @@ def verify_password():
             login_user(user_session, remember=True)
             session.permanent = True
             
-            logger.info("Authentication successful")
+            logger.info(f"Authentication successful for user {user.id}")
+            logger.debug(f"Session created with remember=True, permanent={session.permanent}")
             return jsonify({
                 'success': True,
                 'message': 'Authentication successful'
             }), 200
         else:
-            logger.warning("Authentication failed - invalid password")
+            logger.warning(f"Authentication failed - invalid password for user {user.id}")
             return jsonify({
                 'success': False,
                 'message': 'Invalid password'
             }), 401
             
     except Exception as e:
-        logger.error(f"Authentication error: {str(e)}")
+        logger.error(f"Authentication error: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
             'message': 'Server error occurred'
@@ -116,17 +138,19 @@ def logout():
     """Logout user and clear session"""
     try:
         user_id = current_user.id
+        logger.info(f"Logout request from user {user_id}")
+        
         logout_user()
         session.clear()
         
-        logger.info(f"User {user_id} logged out successfully")
+        logger.info(f"User {user_id} logged out successfully - session cleared")
         return jsonify({
             'success': True,
             'message': 'Logged out successfully'
         }), 200
         
     except Exception as e:
-        logger.error(f"Logout error: {str(e)}")
+        logger.error(f"Logout error: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
             'message': 'Logout error occurred'
@@ -161,6 +185,8 @@ def update_account():
     """Update user account information and save transaction"""
     try:
         data = request.get_json()
+        logger.info(f"Account update request from user {current_user.id}")
+        logger.debug(f"Request data: {data}")
         
         # Extract account data
         account_name = data.get('accountName', '')
@@ -169,8 +195,11 @@ def update_account():
         date_time_str = data.get('dateTime', '')
         transaction_type = data.get('transactionType', 'add')  # 'add' or 'subtract'
         
+        logger.debug(f"Extracted data - Account: {account_name}, Amount: {amount_str}, Type: {transaction_type}")
+        
         # Validate required fields
         if not account_name or not amount_str:
+            logger.warning(f"Validation failed - missing required fields: account_name={bool(account_name)}, amount={bool(amount_str)}")
             return jsonify({
                 'success': False,
                 'message': 'Account name and amount are required'
@@ -180,12 +209,15 @@ def update_account():
         try:
             amount_cleaned = amount_str.replace(',', '')
             amount_decimal = Decimal(amount_cleaned)
+            logger.debug(f"Amount conversion: {amount_str} -> {amount_cleaned} -> {amount_decimal}")
             if amount_decimal <= 0:
+                logger.warning(f"Invalid amount: {amount_decimal} (must be > 0)")
                 return jsonify({
                     'success': False,
                     'message': 'Amount must be greater than zero'
                 }), 400
-        except (ValueError, InvalidOperation):
+        except (ValueError, InvalidOperation) as e:
+            logger.error(f"Amount conversion error: {str(e)}")
             return jsonify({
                 'success': False,
                 'message': 'Invalid amount format'
@@ -195,12 +227,16 @@ def update_account():
         try:
             if date_time_str:
                 transaction_date = datetime.fromisoformat(date_time_str.replace('Z', '+00:00'))
+                logger.debug(f"Parsed date from input: {transaction_date}")
             else:
                 transaction_date = datetime.now()
-        except ValueError:
+                logger.debug(f"Using current date: {transaction_date}")
+        except ValueError as e:
+            logger.warning(f"Date parsing error: {str(e)}, using current date")
             transaction_date = datetime.now()
         
         # Create new transaction
+        logger.debug(f"Creating transaction object for user {current_user.id}")
         new_transaction = Transaction(
             user_id=current_user.id,
             account_name=account_name,
@@ -211,13 +247,17 @@ def update_account():
         )
         
         # Save to database
+        logger.debug("Adding transaction to database session")
         db.session.add(new_transaction)
+        logger.debug("Committing transaction to database")
         db.session.commit()
+        logger.info(f"Transaction successfully saved to database with ID: {new_transaction.id}")
         
         # Calculate new balance for this account
+        logger.debug(f"Calculating new balance for account: {account_name}")
         new_balance = Transaction.get_balance_for_account(current_user.id, account_name)
         
-        logger.info(f"Transaction saved for user {current_user.id}")
+        logger.info(f"Transaction completed for user {current_user.id}")
         logger.info(f"Account: {account_name}, Type: {transaction_type}, Amount: {amount_decimal}, New Balance: {new_balance}")
         
         return jsonify({
@@ -234,8 +274,9 @@ def update_account():
         }), 200
         
     except Exception as e:
+        logger.error(f"Account update error: {str(e)}", exc_info=True)
         db.session.rollback()
-        logger.error(f"Account update error: {str(e)}")
+        logger.info("Database transaction rolled back due to error")
         return jsonify({
             'success': False,
             'message': 'Failed to update account'
@@ -250,26 +291,36 @@ def get_history():
         account_name = request.args.get('account', None)
         limit = request.args.get('limit', 50, type=int)
         
+        logger.info(f"History request from user {current_user.id}")
+        logger.debug(f"Query parameters - account: {account_name}, limit: {limit}")
+        
         # Get transaction history
+        logger.debug(f"Fetching transaction history for user {current_user.id}")
         transactions = Transaction.get_transaction_history(
             user_id=current_user.id,
             account_name=account_name,
             limit=limit
         )
+        logger.debug(f"Found {len(transactions)} transactions")
         
         # Get balances for all accounts
+        logger.debug("Fetching account balances")
         account_balances = Transaction.get_account_balances(current_user.id)
+        logger.debug(f"Account balances: {account_balances}")
         
         # Get total balance
+        logger.debug("Calculating total balance")
         total_balance = Transaction.get_total_balance(current_user.id)
+        logger.debug(f"Total balance: {total_balance}")
         
         # Convert transactions to dictionaries
+        logger.debug("Converting transactions to dictionaries")
         transactions_data = [t.to_dict() for t in transactions]
         
         # Convert Decimal balances to float for JSON
         balances_data = {account: float(balance) for account, balance in account_balances.items()}
         
-        logger.info(f"History fetched for user {current_user.id} - {len(transactions_data)} transactions")
+        logger.info(f"History fetched for user {current_user.id} - {len(transactions_data)} transactions, {len(balances_data)} accounts")
         
         return jsonify({
             'success': True,
@@ -281,7 +332,7 @@ def get_history():
         }), 200
         
     except Exception as e:
-        logger.error(f"History fetch error: {str(e)}")
+        logger.error(f"History fetch error: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
             'message': 'Failed to fetch history'

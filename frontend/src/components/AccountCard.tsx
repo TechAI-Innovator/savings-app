@@ -48,13 +48,19 @@ const AccountCard = ({
       {/* Third div: Two Buttons */}
       <div className="flex gap-5 opacity-0 animate-[fade-in-up_0.8s_ease-out_0.7s_forwards]">
         <Button
-          onClick={onUpdate}
+          onClick={() => {
+            console.log('📝 AccountCard: Update button clicked for account:', title);
+            onUpdate?.();
+          }}
           className="flex-1 rounded-[10px] text-body bg-primary hover:bg-primary/70 text-primary-foreground"
         >
           Update
         </Button>
         <Button
-          onClick={onHistory}
+          onClick={() => {
+            console.log('📊 AccountCard: History button clicked for account:', title);
+            onHistory?.();
+          }}
           className="flex-1 rounded-[10px] text-body text-foreground"
           style={{ backgroundColor: 'hsl(250, 63%, 90%)' }}
         >

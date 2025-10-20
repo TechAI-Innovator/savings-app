@@ -9,9 +9,14 @@ const Index = () => {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
+  console.log('🏠 Index: Component rendered, authentication status:', isAuthenticated);
+
   if (!isAuthenticated) {
+    console.log('🔒 Index: User not authenticated, showing password overlay');
     return <PasswordOverlay />;
   }
+
+  console.log('✅ Index: User authenticated, showing main dashboard');
 
   return (
     <div className="min-h-screen bg-background/72 relative">
@@ -42,7 +47,10 @@ const Index = () => {
           {/* Logout Button */}
           <div className="absolute top-1 right-1">
             <Button
-              onClick={logout}
+              onClick={() => {
+                console.log('🚪 Index: Logout button clicked');
+                logout();
+              }}
               size="sm"
               className="gap-2 bg-primary/90 hover:bg-primary text-primary-foreground rounded-tr-[32px] rounded-bl-2xl backdrop-blur-sm shadow-lg border-0 font-semibold transition-all hover:shadow-xl"
             >

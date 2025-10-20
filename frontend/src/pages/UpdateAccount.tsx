@@ -59,8 +59,18 @@ const UpdateAccount = () => {
   };
 
   const handleSave = async () => {
+    console.log('💾 UpdateAccount: Save transaction initiated');
+    console.log('📊 UpdateAccount: Transaction data:', {
+      accountName: formData.accountName,
+      amount: formData.amount,
+      transactionType,
+      note: formData.note,
+      dateTime: formData.dateTime
+    });
+    
     setIsLoading(true);
     try {
+      console.log('🌐 UpdateAccount: Sending transaction request to backend');
       const response = await fetch(buildApiUrl(ENDPOINTS.ACCOUNT.UPDATE), {
         method: 'POST',
         headers: {
@@ -73,8 +83,11 @@ const UpdateAccount = () => {
         }),
       });
 
+      console.log(`📡 UpdateAccount: Response received - Status: ${response.status}`);
+
       // Check for authentication errors
       if (response.status === 401 || response.status === 403) {
+        console.warn('🔒 UpdateAccount: Authentication error - session expired');
         toast({
           title: "Session Expired",
           description: "Your session has expired. Please login again.",
@@ -85,14 +98,18 @@ const UpdateAccount = () => {
       }
 
       const result = await response.json();
+      console.log('📄 UpdateAccount: Response data:', result);
 
       if (result.success) {
+        console.log('✅ UpdateAccount: Transaction saved successfully');
         toast({
           title: "Success",
           description: "Account updated successfully!",
         });
+        console.log('🏠 UpdateAccount: Navigating back to home page');
         navigate("/");
       } else {
+        console.error('❌ UpdateAccount: Transaction failed:', result.message);
         toast({
           title: "Error",
           description: result.message || "Failed to update account",
@@ -100,13 +117,14 @@ const UpdateAccount = () => {
         });
       }
     } catch (error) {
-      console.error('Error updating account:', error);
+      console.error('🚨 UpdateAccount: Network error:', error);
       toast({
         title: "Error",
         description: "Failed to connect to server",
         variant: "destructive",
       });
     } finally {
+      console.log('🏁 UpdateAccount: Save operation completed');
       setIsLoading(false);
     }
   };
