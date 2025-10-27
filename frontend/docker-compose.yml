@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Flask Backend (connects to Neon PostgreSQL)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: savings-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      # Database Configuration (using Neon)
+      DATABASE_URL: ${DATABASE_URL}
+      
+      # Redis Configuration (for session storage - optional for local dev)
+      REDIS_URL: ${REDIS_URL}
+      
+      # Flask Configuration
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-this-in-production}
+      FLASK_DEBUG: ${FLASK_DEBUG:-False}
+      
+      # API Configuration
+      API_BASE_PATH: ${API_BASE_PATH:-/api}
+      ENDPOINT_AUTH_VERIFY: ${ENDPOINT_AUTH_VERIFY:-/auth/verify}
+      ENDPOINT_AUTH_LOGOUT: ${ENDPOINT_AUTH_LOGOUT:-/auth/logout}
+      ENDPOINT_AUTH_STATUS: ${ENDPOINT_AUTH_STATUS:-/auth/status}
+      ENDPOINT_ACCOUNT_UPDATE: ${ENDPOINT_ACCOUNT_UPDATE:-/account/update}
+      ENDPOINT_ACCOUNT_HISTORY: ${ENDPOINT_ACCOUNT_HISTORY:-/account/history}
+      
+      # CORS Configuration
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      
+      # App Configuration
+      APP_PASSWORD: ${APP_PASSWORD:-admin123}
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: 5000
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
