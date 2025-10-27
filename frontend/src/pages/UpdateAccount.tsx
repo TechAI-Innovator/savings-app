@@ -13,7 +13,7 @@ const UpdateAccount = () => {
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
-  const [showAmount, setShowAmount] = useState(false);
+  const [showAmount, setShowAmount] = useState(true); // Start visible so placeholder shows
   const [isLoading, setIsLoading] = useState(false);
   
   // Get source from URL params
@@ -34,7 +34,7 @@ const UpdateAccount = () => {
   const [transactionType, setTransactionType] = useState<"add" | "subtract">("add");
   const [formData, setFormData] = useState({
     accountName: sourceFromUrl || "Cooperative",
-    amount: "1,323,000.00",
+    amount: "",  // Empty by default so placeholder shows
     note: "",
     dateTime: new Date().toISOString().slice(0, 16) // Format: YYYY-MM-DDTHH:mm
   });
@@ -210,14 +210,22 @@ const UpdateAccount = () => {
                 {/* Amount */}
                 <div className="space-y-2">
                   <Label htmlFor="amount" className="text-body font-medium">
-                    Amount
+                    Amount <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
                       id="amount"
                       type={showAmount ? "text" : "password"}
                       value={formData.amount}
-                      onChange={(e) => handleInputChange("amount", e.target.value)}
+                      onChange={(e) => {
+                        // Only allow numbers and decimal point
+                        const value = e.target.value;
+                        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                          handleInputChange("amount", value);
+                        }
+                      }}
+                      placeholder="e.g., 50000 or 50000.50"
+                      required
                       className="rounded-lg border-2 border-gray-200 focus:border-accentPurple pr-12"
                     />
                     <Button
