@@ -23,23 +23,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Request logging middleware
-@app.before_request
-def log_request_info():
-    """Log incoming requests"""
-    logger.info(f"Request: {request.method} {request.path} from {request.remote_addr}")
-    if request.is_json:
-        logger.debug(f"Request body: {request.get_json()}")
-
-@app.after_request
-def log_response_info(response):
-    """Log outgoing responses"""
-    logger.info(f"Response: {response.status_code} for {request.method} {request.path}")
-    return response
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # 30 minute session timeout
+
+# Session cookie configuration for cross-origin requests
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Allow cross-site requests from same site
+app.config['SESSION_COOKIE_DOMAIN'] = None  # Allow sharing across localhost ports
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
@@ -67,8 +59,8 @@ login_manager.init_app(app)
 login_manager.session_protection = "strong"
 
 # Enable CORS for frontend
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8080')
-CORS(app, supports_credentials=True, origins=[FRONTEND_URL, 'http://localhost:3000'])
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5000')
+CORS(app, supports_credentials=True, origins=[FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080'])
 
 # Flask-Login User wrapper
 class UserSession(UserMixin):
@@ -82,6 +74,33 @@ def load_user(user_id):
     if user:
         return UserSession(user.id)
     return None
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    """Handle unauthorized access attempts"""
+    logger.warning(f"Unauthorized access attempt from {request.remote_addr} to {request.path}")
+    return jsonify({
+        'success': False,
+        'message': 'Authentication required. Please log in.',
+        'error': 'unauthorized'
+    }), 401
+
+# Request logging middleware
+@app.before_request
+def log_request_info():
+    """Log incoming requests"""
+    logger.info(f"Request: {request.method} {request.path} from {request.remote_addr}")
+    if request.is_json and request.get_data():
+        try:
+            logger.debug(f"Request body: {request.get_json()}")
+        except Exception as e:
+            logger.debug(f"Could not parse JSON body: {e}")
+
+@app.after_request
+def log_response_info(response):
+    """Log outgoing responses"""
+    logger.info(f"Response: {response.status_code} for {request.method} {request.path}")
+    return response
 
 @app.route(f'{API_BASE_PATH}{ENDPOINT_AUTH_VERIFY}', methods=['POST'])
 def verify_password():

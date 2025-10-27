@@ -1,5 +1,6 @@
 // API Configuration
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 // API Endpoints
 export const ENDPOINTS = {
@@ -17,6 +18,6 @@ export const ENDPOINTS = {
 
 // Helper function to build full API URL
 export const buildApiUrl = (endpoint: string): string => {
-  return `${API_BASE_URL}${endpoint}`;
+  return `${BACKEND_URL}${API_BASE_URL}${endpoint}`;
 };
 

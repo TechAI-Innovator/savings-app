@@ -4,12 +4,49 @@ import { PasswordOverlay } from "@/components/PasswordOverlay";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { buildApiUrl, ENDPOINTS } from "@/config/api";
+
+interface AccountBalances {
+  [accountName: string]: number;
+}
 
 const Index = () => {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [balances, setBalances] = useState<AccountBalances>({
+    Cooperative: 0,
+    PiggyVest: 0,
+    OPay: 0,
+  });
+  const [balancesVisible, setBalancesVisible] = useState(false); // Hidden by default
 
   console.log('🏠 Index: Component rendered, authentication status:', isAuthenticated);
+
+  // Fetch account balances
+  useEffect(() => {
+    const fetchBalances = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        console.log('💰 Fetching account balances from backend');
+        const response = await fetch(buildApiUrl(ENDPOINTS.ACCOUNT.HISTORY), {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Balances fetched:', data.data.accountBalances);
+          setBalances(data.data.accountBalances);
+        }
+      } catch (err) {
+        console.error('❌ Error fetching balances:', err);
+      }
+    };
+
+    fetchBalances();
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     console.log('🔒 Index: User not authenticated, showing password overlay');
@@ -36,7 +73,7 @@ const Index = () => {
         >
           {/* Background Image with opacity and blur */}
           <div 
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center z-0"
             style={{
               backgroundImage: 'url(/assets/Hero.png)',
               opacity: 0.7,
@@ -45,7 +82,7 @@ const Index = () => {
           />
 
           {/* Logout Button */}
-          <div className="absolute top-1 right-1">
+          <div className="absolute top-1 right-1 z-20">
             <Button
               onClick={() => {
                 console.log('🚪 Index: Logout button clicked');
@@ -77,33 +114,51 @@ const Index = () => {
               <AccountCard
                 iconSrc="/assets/cooperative.avif"
                 title="Cooperative"
-                amount="1,323,000.00"
+                amount={(balances.Cooperative || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 gradientFrom="hsl(40, 15%, 85%)"
                 gradientTo="hsl(40, 15%, 60%)"
                 shadowColor="hsl(40, 15%, 50%)"
+                initiallyVisible={balancesVisible}
+                onVisibilityChange={(visible) => setBalancesVisible(visible)}
                 onUpdate={() => navigate("/update-account?source=Cooperative")}
+                onHistory={() => {
+                  console.log('📊 Index: Navigating to Cooperative transaction history');
+                  navigate("/transaction-history?account=Cooperative");
+                }}
               />
             </div>
             <div className="opacity-0 animate-[fade-in-up_1s_ease-out_1.3s_forwards]">
               <AccountCard
                 iconSrc="/assets/piggyvest.webp"
                 title="PiggyVest"
-                amount="1,323,000.00"
+                amount={(balances.PiggyVest || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 gradientFrom="hsl(210, 60%, 70%)"
                 gradientTo="hsl(210, 60%, 40%)"
                 shadowColor="hsl(210, 60%, 35%)"
+                initiallyVisible={balancesVisible}
+                onVisibilityChange={(visible) => setBalancesVisible(visible)}
                 onUpdate={() => navigate("/update-account?source=PiggyVest")}
+                onHistory={() => {
+                  console.log('📊 Index: Navigating to PiggyVest transaction history');
+                  navigate("/transaction-history?account=PiggyVest");
+                }}
               />
             </div>
             <div className="opacity-0 animate-[fade-in-up_1s_ease-out_1.6s_forwards]">
               <AccountCard
                 iconSrc="/assets/opay.png"
                 title="OPay"
-                amount="1,323,000.00"
+                amount={(balances.OPay || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 gradientFrom="hsl(160, 50%, 70%)"
                 gradientTo="hsl(160, 50%, 40%)"
                 shadowColor="hsl(160, 50%, 35%)"
+                initiallyVisible={balancesVisible}
+                onVisibilityChange={(visible) => setBalancesVisible(visible)}
                 onUpdate={() => navigate("/update-account?source=OPay")}
+                onHistory={() => {
+                  console.log('📊 Index: Navigating to OPay transaction history');
+                  navigate("/transaction-history?account=OPay");
+                }}
               />
             </div>
           </div>

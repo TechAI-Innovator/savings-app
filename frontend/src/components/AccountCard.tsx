@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface AccountCardProps {
   iconSrc: string;
@@ -7,6 +8,8 @@ interface AccountCardProps {
   gradientFrom: string;
   gradientTo: string;
   shadowColor?: string;
+  initiallyVisible?: boolean;
+  onVisibilityChange?: (visible: boolean) => void;
   onUpdate?: () => void;
   onHistory?: () => void;
 }
@@ -18,12 +21,21 @@ const AccountCard = ({
   gradientFrom,
   gradientTo,
   shadowColor,
+  initiallyVisible = false,
+  onVisibilityChange,
   onUpdate,
   onHistory,
 }: AccountCardProps) => {
+  const [isBalanceVisible, setIsBalanceVisible] = useState(initiallyVisible);
+  
+  const toggleVisibility = () => {
+    const newVisibility = !isBalanceVisible;
+    setIsBalanceVisible(newVisibility);
+    onVisibilityChange?.(newVisibility);
+  };
   return (
     <div
-      className="w-full max-w-[400px] h-[222px] px-6 rounded-[24px] flex flex-col gap-8 justify-center transition-transform duration-300 hover:scale-95"
+      className="w-full max-w-[400px] min-w-[300px] h-[222px] px-6 rounded-[24px] flex flex-col gap-8 justify-center transition-transform duration-300 hover:scale-95"
       style={{
         background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
         boxShadow: shadowColor ? `0 -8px 24px -8px ${shadowColor}` : 'none',
@@ -39,10 +51,27 @@ const AccountCard = ({
 
       {/* Second div: Amount and Eye Icon */}
       <div className="flex items-center justify-between gap-12 opacity-0 animate-[fade-in-up_0.8s_ease-out_0.5s_forwards]">
-        <h2 className="text-h2 text-foreground">{amount}</h2>
-        <div className="w-9 h-9 rounded-full bg-primary/80 flex items-center justify-center flex-shrink-0">
-          <img src="/icon/openmoji_eyes.svg" alt="Toggle visibility" className="w-6 h-6" />
-        </div>
+        <h2 className="text-h2 text-foreground">
+          {isBalanceVisible ? `₦ ${amount}` : '₦ •••••'}
+        </h2>
+        <button
+          onClick={() => {
+            toggleVisibility();
+            console.log('👁️ Balance visibility toggled:', !isBalanceVisible);
+          }}
+          className="w-9 h-9 rounded-full bg-primary/80 hover:bg-primary flex items-center justify-center flex-shrink-0 cursor-pointer transition-all relative"
+          style={{
+            backgroundColor: !isBalanceVisible ? gradientFrom : undefined,
+          }}
+        >
+          {isBalanceVisible ? (
+            <img src="/icon/openmoji_eyes.svg" alt="Hide balance" className="w-6 h-6" />
+          ) : (
+            <div className="w-6 h-6 flex items-center justify-center">
+              <div className="w-1 h-4 bg-foreground/80 rounded-full"></div>
+            </div>
+          )}
+        </button>
       </div>
 
       {/* Third div: Two Buttons */}
