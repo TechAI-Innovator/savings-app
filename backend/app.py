@@ -12,13 +12,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configure logging
+# Configure logging (StreamHandler only for Vercel serverless compatibility)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('app.log')
+        logging.StreamHandler()  # Only StreamHandler - Vercel filesystem is read-only
     ]
 )
 logger = logging.getLogger(__name__)
