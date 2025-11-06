@@ -409,12 +409,12 @@ def health_check():
         'message': 'Backend is running'
     }), 200
 
-if __name__ == '__main__':
-    PORT = int(os.environ.get('BACKEND_PORT', 5000))
-    HOST = os.environ.get('BACKEND_HOST', '0.0.0.0')
-    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+# if __name__ == '__main__':
+#     PORT = int(os.environ.get('BACKEND_PORT', 5000))
+#     HOST = os.environ.get('BACKEND_HOST', '0.0.0.0')
+#     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
-    logger.info("Starting Savings System Backend Server")
-    logger.info(f"Server will run on http://{HOST}:{PORT}")
-    logger.info(f"Allowed CORS origin: {FRONTEND_URL}")
-    app.run(debug=DEBUG, host=HOST, port=PORT)
+#     logger.info("Starting Savings System Backend Server")
+#     logger.info(f"Server will run on http://{HOST}:{PORT}")
+#     logger.info(f"Allowed CORS origin: {FRONTEND_URL}")
+#     app.run(debug=DEBUG, host=HOST, port=PORT)
