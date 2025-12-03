@@ -20,17 +20,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Make entrypoint script executable
+RUN chmod +x docker-entrypoint.sh
+
 # Create directory for logs
 RUN mkdir -p /app/logs
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=app.py
-ENV PORT=5000
 
-# Expose port
-EXPOSE 5000
+# Expose port (Render will set PORT dynamically)
+EXPOSE 5001
 
-# Run the application with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "app:app"]
+# Use entrypoint script to handle DB setup and start server
+ENTRYPOINT ["./docker-entrypoint.sh"]
 

@@ -25,12 +25,11 @@ venv.bak/
 *.swo
 *~
 
-# Logs
+# Logs (exclude from Docker image)
 *.log
 logs/
-app.log
 
-# Database
+# Database (local development only)
 *.db
 *.sqlite
 *.sqlite3
@@ -43,17 +42,17 @@ Thumbs.db
 .git/
 .gitignore
 
-# Docker
-Dockerfile
-.dockerignore
+# Docker (don't need these inside the image)
 docker-compose.yml
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
+test_*.py
+*_test.py
 
-# Documentation
+# Documentation (optional - can include if needed)
 *.md
-README.md
+!README.md
 

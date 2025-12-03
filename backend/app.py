@@ -2,14 +2,11 @@ from flask import Flask, request, jsonify, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_session import Session
-from flask_session.sessions import RedisSessionInterface
 import os
 import logging
 from datetime import timedelta, datetime
 from decimal import Decimal, InvalidOperation
 from dotenv import load_dotenv
-import redis
 
 
 
@@ -26,51 +23,27 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # 30 minute session timeout
 
-# Session storage configuration - Use Redis for Vercel serverless compatibility
-redis_url = os.environ.get('REDIS_URL')
+# Get environment configuration
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
 is_production = os.environ.get('VERCEL_ENV') == 'production'
+ENV = os.environ.get('FLASK_ENV', 'development')
 
-if redis_url:
-    # Use Redis for session storage (required for Vercel)
-    logger.info("Configuring Redis session storage for serverless deployment")
-    app.config['SESSION_TYPE'] = 'redis'
-    app.config['SESSION_PERMANENT'] = True
-    app.config['SESSION_USE_SIGNER'] = True
+# Flask configuration
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)  # 5 minute session timeout
 
-    class UTF8RedisSessionInterface(RedisSessionInterface):
-        """Ensure session IDs are str for cookie compatibility."""
+# Session cookie configuration (Flask default sessions with cookies)
+if is_production or ENV == "production":
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_SECURE'] = True
+else:  # development (localhost)
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_SECURE'] = False
 
-        def save_session(self, app, session, response):
-            if session is None:
-                return super().save_session(app, session, response)
-
-            if hasattr(session, 'sid') and isinstance(session.sid, bytes):
-                session.sid = session.sid.decode('utf-8')
-
-            return super().save_session(app, session, response)
-
-    redis_kwargs = {}
-
-    if redis_url.startswith('rediss://'):
-        # Upstash/managed Redis over TLS
-        redis_kwargs['ssl_cert_reqs'] = None
-
-    redis_client = redis.from_url(redis_url, **redis_kwargs)
-    app.session_interface = UTF8RedisSessionInterface(redis_client, key_prefix=app.config.get('SESSION_KEY_PREFIX', 'session:'))
-else:
-    # Fallback to filesystem sessions for local development
-    logger.warning("No REDIS_URL found - using filesystem sessions (local dev only)")
-    app.config['SESSION_TYPE'] = 'filesystem'
-    Session(app)
-
-# Session cookie configuration for cross-origin requests
-app.config['SESSION_COOKIE_SECURE'] = is_production  # True for HTTPS (required with SameSite=None)
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
-app.config['SESSION_COOKIE_SAMESITE'] = 'None' if is_production else 'Lax'  # None for cross-domain
-app.config['SESSION_COOKIE_DOMAIN'] = None  # Don't restrict domain
+app.config['SESSION_COOKIE_DOMAIN'] = None  # Allow cross-origin cookies
+app.config['SESSION_COOKIE_PATH'] = '/'  # Ensure cookie is set for all paths
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
@@ -409,12 +382,12 @@ def health_check():
         'message': 'Backend is running'
     }), 200
 
-# if __name__ == '__main__':
-#     PORT = int(os.environ.get('BACKEND_PORT', 5000))
-#     HOST = os.environ.get('BACKEND_HOST', '0.0.0.0')
-#     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+if __name__ == '__main__':
+    PORT = int(os.environ.get('BACKEND_PORT', 5001))
+    HOST = os.environ.get('BACKEND_HOST', '0.0.0.0')
+    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
-#     logger.info("Starting Savings System Backend Server")
-#     logger.info(f"Server will run on http://{HOST}:{PORT}")
-#     logger.info(f"Allowed CORS origin: {FRONTEND_URL}")
-#     app.run(debug=DEBUG, host=HOST, port=PORT)
+    logger.info("Starting Savings System Backend Server")
+    logger.info(f"Server will run on http://{HOST}:{PORT}")
+    logger.info(f"Allowed CORS origin: {FRONTEND_URL}")
+    app.run(debug=DEBUG, host=HOST, port=PORT)
