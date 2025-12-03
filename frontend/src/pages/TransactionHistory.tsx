@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { buildApiUrl, ENDPOINTS } from '@/config/api';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams, useNavigate } from 'react-router-dom';
 
 interface Transaction {
   id: number;
@@ -25,6 +25,7 @@ interface HistoryData {
 
 const TransactionHistory = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const accountFilter = searchParams.get('account'); // Get account from URL
   const [loading, setLoading] = useState(true);
@@ -168,8 +169,18 @@ const TransactionHistory = () => {
           </div>
         </div>
 
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors mb-4 mt-6"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span className="text-lg font-medium">Back</span>
+        </button>
 
-        <h1 className="text-3xl font-bold text-gray-800 my-10">
+        <h1 className="text-3xl font-bold text-gray-800 mb-10">
           Transaction History
           {accountFilter && <span className="text-2xl text-gray-600"> - {accountFilter}</span>}
         </h1>
