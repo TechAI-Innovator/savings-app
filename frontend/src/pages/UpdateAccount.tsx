@@ -130,71 +130,84 @@ const UpdateAccount = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-bl from-black via-black via-65% to-accentPurple relative flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-bl from-black via-black via-65% to-accentPurple relative flex items-center justify-center p-4 md:p-6 lg:p-0">
       {/* Main container with two panels */}
-      <div className="flex w-[70%] h-[70vh] rounded-3xl overflow-hidden shadow-2xl bg-gray-800">
-        {/* Left Panel - Glassy gradient background with centered image */}
-        <div className="flex-1 relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row w-full max-w-[95%] md:max-w-[85%] lg:w-[70%] lg:h-[80vh] rounded-3xl overflow-hidden shadow-2xl bg-gray-800">
+        {/* Left Panel - Hidden on mobile, visible on tablet and up */}
+        <div className="hidden md:flex flex-1 relative overflow-hidden min-h-[200px] lg:min-h-0 items-center justify-center">
           {/* Glassy gradient background */}
           <div className="absolute inset-0 bg-gradient-to-bl from-gray-900 via-gray-800 via-65% to-accentPurple backdrop-blur-2xl border-t border-white/10 shadow-inner" />
 
           {/* Small centered image */}
-          <div className="relative z-10 h-full flex items-center justify-center">
+          <div className="relative z-10 flex items-center justify-center">
             <img 
               src={iconFromUrl} 
               alt={formData.accountName} 
-              className="w-48 h-48 object-cover drop-shadow-lg rounded-full"
+              className="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 object-cover drop-shadow-lg rounded-full"
             />
           </div>
         </div>
 
         {/* Right Panel - Form */}
-        <div className="flex-1 bg-gradient-to-br from-gray-100 to-white flex items-center justify-center p-8 border-[10px] border-background rounded-3xl h-full min-h-[500px]">
-          <div className="w-full max-w-md space-y-6">
-            {/* Header */}
-            <div className="text-center space-y-2">
-              <h1 className="text-h3 text-foreground">Update Account</h1>
+        <div className="flex-1 bg-gradient-to-br from-gray-100 to-white flex items-center justify-center p-6 md:p-8 lg:p-10 border-4 md:border-[10px] border-background rounded-3xl min-h-[500px]">
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md space-y-3 md:space-y-4 lg:space-y-2">
+            {/* Mobile header with icon */}
+            <div className="flex md:hidden items-center gap-3 mb-4">
+              <img 
+                src={iconFromUrl} 
+                alt={formData.accountName} 
+                className="w-12 h-12 object-cover drop-shadow-lg rounded-full"
+              />
+              <div>
+                <h1 className="text-xl font-bold text-foreground">Update Account</h1>
+                <p className="text-sm text-muted-foreground">Modify your account</p>
+              </div>
+            </div>
+
+            {/* Desktop Header - hidden on mobile */}
+            <div className="hidden md:block text-center">
+              <h1 className="text-h2 text-foreground">Update Account</h1>
               <p className="text-body text-muted-foreground">
                 Modify your account information
               </p>
             </div>
 
             {/* Form */}
-            <div className="flex justify-center items-center gap-12 h-full">
-              <div>
+            <div className="flex flex-col lg:flex-row justify-center items-stretch gap-6">
+              <div className="flex-1 space-y-4">
                 {/* Transaction Type Buttons */}
-                <div className="">
+                <div>
                   <Label className="text-body font-medium mb-3 block">
                     Transaction Type
                   </Label>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Button
                       type="button"
                       onClick={() => setTransactionType("add")}
-                      className={`flex-1 rounded-lg text-body font-semibold transition-all ${
+                      className={`flex-1 rounded-lg text-sm md:text-body font-semibold transition-all py-3 ${
                         transactionType === "add"
                           ? "bg-green-600 hover:bg-green-700 text-white"
                           : "bg-gray-200 hover:bg-gray-300 text-gray-700"
                       }`}
                     >
-                      <span className="text-xl mr-1">+</span> Add Money
+                      <span className="text-lg md:text-xl mr-1">+</span> Add Money
                     </Button>
                     <Button
                       type="button"
                       onClick={() => setTransactionType("subtract")}
-                      className={`flex-1 rounded-lg text-body font-semibold transition-all ${
+                      className={`flex-1 rounded-lg text-sm md:text-body font-semibold transition-all py-3 ${
                         transactionType === "subtract"
                           ? "bg-red-600 hover:bg-red-700 text-white"
                           : "bg-gray-200 hover:bg-gray-300 text-gray-700"
                       }`}
                     >
-                      <span className="text-xl mr-1">-</span> Subtract Money
+                      <span className="text-lg md:text-xl mr-1">-</span> Subtract Money
                     </Button>
                   </div>
                 </div>
 
                  {/* Account Name */}
-                 <div className="">
+                 <div>
                    <Label htmlFor="accountName" className="text-body font-medium">
                      Source
                    </Label>
@@ -273,11 +286,11 @@ const UpdateAccount = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col items-center justify-center space-y-6 w-full max-w-[180px] self-center -translate-y-2">
+              <div className="flex flex-row lg:flex-col items-center justify-center gap-3 lg:gap-6 w-full lg:w-auto lg:max-w-[180px] pt-4 lg:pt-0 lg:-translate-y-2">
                 <Button
                   onClick={() => navigate("/")}
                   variant="outline"
-                  className="w-full rounded-lg border-2 border-gray-300 hover:border-gray-400"
+                  className="flex-1 lg:flex-none lg:w-full rounded-lg border-2 border-gray-300 hover:border-gray-400"
                 >
                   <ArrowLeft className="w-4 h-4 mr-1" />
                   Back
@@ -285,7 +298,7 @@ const UpdateAccount = () => {
                 <Button
                   onClick={handleSave}
                   disabled={isLoading}
-                  className="w-full rounded-lg bg-accentPurple hover:bg-accentPurple/90 text-white disabled:opacity-50"
+                  className="flex-1 lg:flex-none lg:w-full rounded-lg bg-accentPurple hover:bg-accentPurple/90 text-white disabled:opacity-50"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {isLoading ? "Saving..." : "Save Changes"}

@@ -86,4 +86,5 @@ def pre_exec(server):
 def post_worker_init(worker):
     """Called just after a worker has initialized the application."""
     worker.log.info(f"Worker initialized successfully (pid: {worker.pid})")
+    worker.log.info("Database keep-alive scheduler is active (pinging every 4 minutes)")
 

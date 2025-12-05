@@ -382,6 +382,40 @@ def health_check():
         'message': 'Backend is running'
     }), 200
 
+# Database keep-alive to prevent Neon cold starts
+def keep_db_alive():
+    """
+    Ping the database every 4 minutes to prevent Neon DB hibernation.
+    Neon free tier hibernates after ~5 minutes of inactivity.
+    """
+    with app.app_context():
+        try:
+            # Simple lightweight query to keep connection alive
+            result = db.session.execute(db.text("SELECT 1")).scalar()
+            logger.debug(f"✅ Database keep-alive ping successful (result: {result})")
+        except Exception as e:
+            logger.error(f"❌ Database keep-alive ping failed: {str(e)}", exc_info=True)
+
+# Initialize background scheduler for database keep-alive
+from apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
+
+def init_scheduler():
+    """Initialize scheduled jobs with Flask app context."""
+    if not scheduler.running:
+        # Ping database every 4 minutes (Neon sleeps after ~5 minutes)
+        scheduler.add_job(keep_db_alive, 'interval', minutes=4, id='keep_db_alive')
+        scheduler.start()
+        logger.info("✅ Database keep-alive scheduler started (pinging every 4 minutes)")
+
+# Start scheduler when app initializes
+init_scheduler()
+
+# Graceful shutdown
+import atexit
+atexit.register(lambda: scheduler.shutdown() if scheduler.running else None)
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('BACKEND_PORT', 5001))
     HOST = os.environ.get('BACKEND_HOST', '0.0.0.0')
