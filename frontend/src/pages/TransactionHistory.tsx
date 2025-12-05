@@ -133,17 +133,17 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 max-w-[60%] mx-auto px-40 py-16">
-      <div className="max-w-7xl mx-auto bg-white rounded-[80px] shadow-lg px-8 pb-8 pt-4 min-h-[500px] border-[10px] border-blue-200">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-4 md:p-6 lg:px-40 lg:py-16 flex justify-center">
+      <div className="w-full lg:max-w-[60%] bg-white rounded-2xl sm:rounded-3xl md:rounded-[80px] shadow-lg px-4 sm:px-6 md:px-8 pb-6 md:pb-8 pt-3 md:pt-4 min-h-[500px] border-4 md:border-[10px] border-blue-200">
         {/* Status bar design */}
-        <div className='relative flex items-center px-12 h-[40px]'>
+        <div className='flex relative items-center sm:px-8 px-0 lg:px-12 h-[40px]'>
           {/* for time */}
           <div className='flex items-center gap-2'>
             <p className="text-gray-600 text-body font-medium">{currentTime}</p>
           </div>
           {/* For the space in the middle - absolutely centered */}
           <div className='absolute left-1/2 transform -translate-x-1/2 h-full flex items-center'>
-            <div className='h-full bg-blue-100 w-32 flex items-center justify-center rounded-full'>
+            <div className='h-full bg-blue-100 w-24 lg:w-32 flex items-center justify-center rounded-full'>
               <p className="text-gray-0 text-sm"></p>
             </div>
           </div>
@@ -172,57 +172,57 @@ const TransactionHistory = () => {
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors mb-4 mt-6"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors mb-3 md:mb-4 mt-2 md:mt-6"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span className="text-lg font-medium">Back</span>
+          <span className="text-base md:text-lg font-medium">Back</span>
         </button>
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-10">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-10">
           Transaction History
-          {accountFilter && <span className="text-2xl text-gray-600"> - {accountFilter}</span>}
+          {accountFilter && <span className="text-lg sm:text-xl md:text-2xl text-gray-600 block sm:inline"> - {accountFilter}</span>}
         </h1>
         
         {/* Account Balances Summary */}
         {historyData && (
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">General Summary</h2>
+          <div className="mb-4 md:mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-3 md:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">General Summary</h2>
               <button
                 onClick={() => setBalancesVisible(!balancesVisible)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
               >
                 {balancesVisible ? (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    <span className="text-sm font-medium">Hide Balances</span>
+                    <span className="text-xs md:text-sm font-medium">Hide</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                     </svg>
-                    <span className="text-sm font-medium">Show Balances</span>
+                    <span className="text-xs md:text-sm font-medium">Show</span>
                   </>
                 )}
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg">
-                <h3 className="text-lg font-semibold">Total Balance</h3>
-                <p className="text-2xl font-bold">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 md:p-4 rounded-lg shadow-lg">
+                <h3 className="text-sm md:text-lg font-semibold">Total Balance</h3>
+                <p className="text-lg md:text-2xl font-bold">
                   {balancesVisible ? `₦${historyData.totalBalance.toLocaleString()}` : '₦ •••••'}
                 </p>
               </div>
               {Object.entries(historyData.accountBalances).map(([account, balance]) => (
-                <div key={account} className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg">
-                  <h3 className="text-lg font-semibold">{account}</h3>
-                  <p className="text-xl font-bold">
+                <div key={account} className="bg-gradient-to-r from-green-500 to-green-600 text-white p-3 md:p-4 rounded-lg shadow-lg">
+                  <h3 className="text-sm md:text-lg font-semibold">{account}</h3>
+                  <p className="text-base md:text-xl font-bold">
                     {balancesVisible ? `₦${balance.toLocaleString()}` : '₦ •••••'}
                   </p>
                 </div>
@@ -232,21 +232,21 @@ const TransactionHistory = () => {
         )}
 
         {/* Transaction List */}
-        <div className="bg-white rounded-[54px] shadow-lg p-6">
+        <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-[54px] shadow-lg p-3 sm:p-4 md:p-6">
           {historyData && historyData.transactions.length > 0 ? (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <div className="space-y-3 md:space-y-4">
+              <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4">
                 Recent Transactions ({historyData.transactions.length})
               </h2>
               {historyData.transactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="border-2 border-gray-200 rounded-3xl p-5 hover:shadow-xl hover:border-blue-300 transition-all duration-300"
+                  className="border-2 border-gray-200 rounded-xl sm:rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-5 hover:shadow-xl hover:border-blue-300 transition-all duration-300"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className={`px-4 py-1.5 rounded-full text-base font-semibold ${
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                        <span className={`px-2 sm:px-3 md:px-4 py-1 md:py-1.5 rounded-full text-xs sm:text-sm md:text-base font-semibold ${
                           transaction.transaction_type === 'add' 
                             ? 'bg-green-100 text-green-800' 
                             : transaction.transaction_type === 'subtract'
@@ -256,19 +256,19 @@ const TransactionHistory = () => {
                           {transaction.transaction_type === 'add' ? '+ Deposit' : transaction.transaction_type === 'subtract' ? '- Withdrawal' : transaction.transaction_type}
                         </span>
                         {!accountFilter && (
-                          <span className="text-base font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                          <span className="text-xs sm:text-sm md:text-base font-medium text-blue-600 bg-blue-50 px-2 md:px-3 py-0.5 md:py-1 rounded-full">
                             {transaction.account_name}
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-900 font-bold text-2xl mb-2">
+                      <p className="text-gray-900 font-bold text-lg sm:text-xl md:text-2xl mb-1 md:mb-2">
                         ₦{transaction.amount.toLocaleString()}
                       </p>
                       {transaction.note && (
-                        <p className="text-gray-700 text-base mt-2 italic">"{transaction.note}"</p>
+                        <p className="text-gray-700 text-sm md:text-base mt-1 md:mt-2 italic">"{transaction.note}"</p>
                       )}
-                      <p className="text-gray-500 text-sm mt-3 flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <p className="text-gray-500 text-xs md:text-sm mt-2 md:mt-3 flex items-center gap-1 md:gap-2">
+                        <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         {new Date(transaction.transaction_date).toLocaleString('en-US', {
@@ -285,12 +285,12 @@ const TransactionHistory = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center py-6 md:py-8">
+              <svg className="w-12 h-12 md:w-16 md:h-16 mx-auto text-gray-400 mb-3 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No transactions yet</h3>
-              <p className="text-gray-500">Start by adding some money to your accounts!</p>
+              <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">No transactions yet</h3>
+              <p className="text-gray-500 text-sm md:text-base">Start by adding some money to your accounts!</p>
             </div>
           )}
         </div>
