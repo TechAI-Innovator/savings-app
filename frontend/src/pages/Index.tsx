@@ -12,7 +12,7 @@ interface AccountBalances {
 }
 
 const Index = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [balances, setBalances] = useState<AccountBalances>({
     Cooperative: 0,
@@ -21,7 +21,7 @@ const Index = () => {
   });
   const [balancesVisible, setBalancesVisible] = useState(false); // Hidden by default
 
-  console.log('🏠 Index: Component rendered, authentication status:', isAuthenticated);
+  console.log('🏠 Index: Component rendered, authentication status:', isAuthenticated, 'loading:', authLoading);
 
   // Fetch account balances
   useEffect(() => {
@@ -47,6 +47,18 @@ const Index = () => {
 
     fetchBalances();
   }, [isAuthenticated]);
+
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background/72 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     console.log('🔒 Index: User not authenticated, showing password overlay');

@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const UpdateAccount = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [searchParams] = useSearchParams();
   const [showAmount, setShowAmount] = useState(true); // Start visible so placeholder shows
   const [isLoading, setIsLoading] = useState(false);
@@ -39,9 +39,9 @@ const UpdateAccount = () => {
     dateTime: new Date().toISOString().slice(0, 16) // Format: YYYY-MM-DDTHH:mm
   });
 
-  // Redirect to home if not authenticated (after timeout)
+  // Redirect to home if not authenticated (after auth check completes)
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!authLoading && !isAuthenticated) {
       toast({
         title: "Session Expired",
         description: "Your session has expired. Please login again.",
@@ -49,7 +49,19 @@ const UpdateAccount = () => {
       });
       navigate("/");
     }
-  }, [isAuthenticated, navigate, toast]);
+  }, [isAuthenticated, authLoading, navigate, toast]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
