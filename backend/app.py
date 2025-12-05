@@ -26,20 +26,30 @@ app = Flask(__name__)
 
 # Get environment configuration
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
-is_production = os.environ.get('VERCEL_ENV') == 'production'
 ENV = os.environ.get('FLASK_ENV', 'development')
+
+# Detect production: Render sets RENDER=true, or check FLASK_ENV
+is_production = (
+    os.environ.get('RENDER') == 'true' or 
+    os.environ.get('VERCEL_ENV') == 'production' or 
+    ENV == 'production'
+)
 
 # Flask configuration
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)  # 5 minute session timeout
 
 # Session cookie configuration (Flask default sessions with cookies)
-if is_production or ENV == "production":
+if is_production:
+    # Production: Cross-domain cookies (Vercel frontend + Render backend)
     app.config['SESSION_COOKIE_SAMESITE'] = 'None'
     app.config['SESSION_COOKIE_SECURE'] = True
-else:  # development (localhost)
+    logger.info("🔒 Production mode: Using secure cross-domain cookies (SameSite=None, Secure=True)")
+else:
+    # Development: Same-domain cookies (localhost)
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     app.config['SESSION_COOKIE_SECURE'] = False
+    logger.info("🔧 Development mode: Using standard cookies (SameSite=Lax)")
 
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
 app.config['SESSION_COOKIE_DOMAIN'] = None  # Allow cross-origin cookies
@@ -408,6 +418,10 @@ def init_scheduler():
         scheduler.add_job(keep_db_alive, 'interval', minutes=4, id='keep_db_alive')
         scheduler.start()
         logger.info("✅ Database keep-alive scheduler started (pinging every 4 minutes)")
+        
+        # Initial ping immediately on startup
+        logger.info("🔄 Running initial database ping...")
+        keep_db_alive()
 
 # Start scheduler when app initializes
 init_scheduler()
