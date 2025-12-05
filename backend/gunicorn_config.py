@@ -41,7 +41,14 @@ group = None
 tmp_upload_dir = None
 
 # Preload app for better memory efficiency
+# Note: With preload_app=True, the scheduler starts in master process before forking
 preload_app = True
+
+# Limit workers on free tier to avoid multiple scheduler instances
+# Render free tier has limited resources anyway
+import os
+if os.environ.get('RENDER') == 'true':
+    workers = 2  # Limit workers on Render free tier
 
 # SSL (uncomment and configure for HTTPS if needed)
 # keyfile = "/path/to/keyfile"

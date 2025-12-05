@@ -80,9 +80,16 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
 
-# Enable CORS for frontend
+# Enable CORS for frontend (with Safari/iOS compatibility)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8080')
-CORS(app, supports_credentials=True, origins=[FRONTEND_URL, 'http://localhost:8080'])
+CORS(
+    app, 
+    supports_credentials=True, 
+    origins=[FRONTEND_URL, 'http://localhost:8080'],
+    allow_headers=['Content-Type', 'Authorization', 'X-Requested-With'],
+    methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    expose_headers=['Set-Cookie']
+)
 
 # Flask-Login User wrapper
 class UserSession(UserMixin):
@@ -119,9 +126,24 @@ def log_request_info():
             logger.debug(f"Could not parse JSON body: {e}")
 
 @app.after_request
-def log_response_info(response):
-    """Log outgoing responses"""
+def after_request(response):
+    """Add CORS headers and log responses (Safari/iOS compatibility)"""
     logger.info(f"Response: {response.status_code} for {request.method} {request.path}")
+    
+    # Get the origin from the request
+    origin = request.headers.get('Origin')
+    
+    # Add explicit CORS headers for Safari/iOS compatibility
+    if origin and (origin == FRONTEND_URL or origin == 'http://localhost:8080'):
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+        response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
+        
+        # Safari requires explicit Vary header
+        response.headers['Vary'] = 'Origin, Cookie'
+    
     return response
 
 @app.route(f'{API_BASE_PATH}{ENDPOINT_AUTH_VERIFY}', methods=['POST'])
