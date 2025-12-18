@@ -11,6 +11,20 @@ interface AccountBalances {
   [accountName: string]: number;
 }
 
+interface Transaction {
+  id: number;
+  account_name: string;
+  transaction_type: string;
+  amount: number;
+  transaction_date: string;
+}
+
+interface AccountStats {
+  depositsThisMonth: number;
+  lastDepositDate: string | null;
+  lastDepositMonth: string | null;
+}
+
 const Index = () => {
   const { isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
@@ -19,17 +33,88 @@ const Index = () => {
     PiggyVest: 0,
     OPay: 0,
   });
+  const [accountStats, setAccountStats] = useState<{ [key: string]: AccountStats }>({});
+  const [totalBalance, setTotalBalance] = useState(0);
   const [balancesVisible, setBalancesVisible] = useState(false); // Hidden by default
 
   console.log('🏠 Index: Component rendered, authentication status:', isAuthenticated, 'loading:', authLoading);
 
-  // Fetch account balances
+  // Calculate account stats from transactions
+  const calculateAccountStats = (transactions: Transaction[]) => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    const stats: { [key: string]: AccountStats } = {
+      Cooperative: { depositsThisMonth: 0, lastDepositDate: null, lastDepositMonth: null },
+      PiggyVest: { depositsThisMonth: 0, lastDepositDate: null, lastDepositMonth: null },
+      OPay: { depositsThisMonth: 0, lastDepositDate: null, lastDepositMonth: null },
+    };
+
+    // Sort transactions by date (newest first)
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+    );
+
+    sortedTransactions.forEach((tx) => {
+      if (tx.transaction_type !== 'add') return; // Only count deposits
+      
+      const txDate = new Date(tx.transaction_date);
+      const txMonth = txDate.getMonth();
+      const txYear = txDate.getFullYear();
+      
+      const accountName = tx.account_name;
+      if (!stats[accountName]) {
+        stats[accountName] = { depositsThisMonth: 0, lastDepositDate: null, lastDepositMonth: null };
+      }
+      
+      // Count deposits this month
+      if (txMonth === currentMonth && txYear === currentYear) {
+        stats[accountName].depositsThisMonth++;
+      }
+      
+      // Track last deposit date (first one we see since sorted newest first)
+      if (!stats[accountName].lastDepositDate) {
+        stats[accountName].lastDepositDate = txDate.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        stats[accountName].lastDepositMonth = txDate.toLocaleDateString('en-US', { 
+          month: 'long', 
+          year: 'numeric' 
+        });
+      }
+    });
+
+    return stats;
+  };
+
+  // Generate ticker text based on account stats
+  const generateTickerText = () => {
+    const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long' });
+    const parts: string[] = [];
+
+    // Stats for each account (no total balance)
+    Object.entries(accountStats).forEach(([account, stats]) => {
+      if (stats.depositsThisMonth > 0) {
+        parts.push(`✅ ${account}: ${stats.depositsThisMonth} deposit${stats.depositsThisMonth > 1 ? 's' : ''} in ${currentMonth}`);
+      } else if (stats.lastDepositMonth) {
+        parts.push(`⚠️ ${account}: No deposits yet in ${currentMonth} (last: ${stats.lastDepositMonth})`);
+      } else {
+        parts.push(`📝 ${account}: No deposits yet`);
+      }
+    });
+
+    return parts.join('  |  ');
+  };
+
+  // Fetch account balances and transactions
   useEffect(() => {
-    const fetchBalances = async () => {
+    const fetchData = async () => {
       if (!isAuthenticated) return;
 
       try {
-        console.log('💰 Fetching account balances from backend');
+        console.log('💰 Fetching account data from backend');
         const response = await fetch(buildApiUrl(ENDPOINTS.ACCOUNT.HISTORY), {
           method: 'GET',
           credentials: 'include',
@@ -37,15 +122,20 @@ const Index = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ Balances fetched:', data.data.accountBalances);
-          setBalances(data.data.accountBalances);
+          console.log('✅ Data fetched:', data.data);
+          setBalances(data.data.accountBalances || {});
+          setTotalBalance(data.data.totalBalance || 0);
+          
+          // Calculate stats from transactions
+          const stats = calculateAccountStats(data.data.transactions || []);
+          setAccountStats(stats);
         }
       } catch (err) {
-        console.error('❌ Error fetching balances:', err);
+        console.error('❌ Error fetching data:', err);
       }
     };
 
-    fetchBalances();
+    fetchData();
   }, [isAuthenticated]);
 
   // Show loading spinner while checking auth
@@ -186,23 +276,15 @@ const Index = () => {
             {/* Left line */}
             <div></div>
 
-            {/* Center text */}
+            {/* Center text - Infinite scrolling ticker */}
             <div className="border-x-[4px] border-accentPurple h-full flex items-center justify-start md:w-[60%] overflow-hidden relative">
               <div className="flex animate-scroll-left">
+                {/* Two copies for seamless infinite loop */}
                 <p className="whitespace-nowrap text-h3 text-accentPurple">
-                  Total savings Balance is 43,000,000 | Added ₦5,000 to PiggyVest | Tip: Save before spending | New goal: ₦500k target
+                  {generateTickerText()}
                 </p>
-                <p className="whitespace-nowrap text-h3 text-accentPurple pr-12">
-                  Total savings Balance is 43,000,000 | Added ₦5,000 to PiggyVest | Tip: Save before spending | New goal: ₦500k target
-                </p>
-                <p className="whitespace-nowrap text-h3 text-accentPurple pr-12">
-                  Total savings Balance is 43,000,000 | Added ₦5,000 to PiggyVest | Tip: Save before spending | New goal: ₦500k target
-                </p>
-                <p className="whitespace-nowrap text-h3 text-accentPurple pr-12">
-                  Total savings Balance is 43,000,000 | Added ₦5,000 to PiggyVest | Tip: Save before spending | New goal: ₦500k target
-                </p>
-                <p className="whitespace-nowrap text-h3 text-accentPurple pr-12">
-                  Total savings Balance is 43,000,000 | Added ₦5,000 to PiggyVest | Tip: Save before spending | New goal: ₦500k target
+                <p className="whitespace-nowrap text-h3 text-accentPurple">
+                  {generateTickerText()}
                 </p>
               </div>
             </div>
