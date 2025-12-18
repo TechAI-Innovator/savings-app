@@ -242,18 +242,19 @@ All colors MUST be HSL.
     }
   }
 
-  /* Scroll Animation */
+  /* Scroll Animation - Seamless infinite loop */
   @keyframes scroll-left {
     0% {
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateX(-50%); /* Move by 50% since we have 2 copies */
     }
   }
 
   .animate-scroll-left {
-    animation: scroll-left 60s linear infinite;
+    animation: scroll-left 20s linear infinite;
+    will-change: transform; /* Performance optimization */
   }
 
   /* Card Scroll Reveal */
