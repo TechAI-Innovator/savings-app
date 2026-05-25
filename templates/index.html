@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "macros.html" import account_card %}
+{% block title %}Savings System{% endblock %}
+
+{% block body %}
+<div id="app-loading" class="min-h-screen flex items-center justify-center" style="background-color: hsla(0,0%,85%,0.72)">
+  <div class="text-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Loading...</p>
+  </div>
+</div>
+
+<div id="main-dashboard" class="hidden-ui min-h-screen relative" style="background-color: hsla(0,0%,85%,0.72)">
+  <div class="mx-auto max-w-[1440px] px-6 py-6 md:px-16 lg:px-16">
+    <section class="relative mb-12 overflow-hidden backdrop-blur-[4px] px-[16px]"
+      style="height: 460px; border-radius: 32px; border: 0.5px solid rgba(0,0,0,1); box-shadow: 0 4px 4px rgba(0,0,0,0.25);">
+      <div class="absolute inset-0 bg-cover bg-center z-0"
+        style="background-image: url('{{ url_for('static', filename='assets/Hero.png') }}'); opacity: 0.7; filter: blur(4px);"></div>
+      <div class="absolute top-1 right-1 z-20">
+        <button type="button" id="logout-btn"
+          class="gap-2 bg-primary/90 hover:bg-primary text-primary-foreground rounded-tr-[32px] rounded-bl-2xl backdrop-blur-sm shadow-lg border-0 font-semibold transition-all hover:shadow-xl inline-flex items-center justify-center h-9 px-3 text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+      <div class="relative z-10 flex h-full flex-col items-center justify-center gap-6">
+        <div>
+          <h1 class="text-display text-foreground opacity-0" style="animation: fade-in-up 1s ease-out forwards;">MY SAVINGS TRACKER</h1>
+          <p class="text-h2 max-w-4xl text-foreground opacity-0" style="animation: fade-in-up 1s ease-out 0.4s forwards;">
+            See your savings grow, not your confusion. Bring all your accounts together, understand your habits, and make smarter money moves with a tracker built for clarity and growth.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <div class="flex flex-col items-center md:flex-row md:flex-wrap justify-center gap-6 md:items-stretch" id="account-cards">
+        {{ account_card('Cooperative', 'assets/cooperative.avif', 'hsl(40, 15%, 85%)', 'hsl(40, 15%, 60%)', 'hsl(40, 15%, 50%)', '1s') }}
+        {{ account_card('PiggyVest', 'assets/piggyvest.webp', 'hsl(210, 60%, 70%)', 'hsl(210, 60%, 40%)', 'hsl(210, 60%, 35%)', '1.3s') }}
+        {{ account_card('OPay', 'assets/opay.png', 'hsl(160, 50%, 70%)', 'hsl(160, 50%, 40%)', 'hsl(160, 50%, 35%)', '1.6s') }}
+      </div>
+    </section>
+
+    <footer>
+      <h1 class="text-h1">Savings Highlights</h1>
+      <div class="bg-lightCream border-[0.5px] border-accentPurple rounded-[10px] h-[64px] flex items-center justify-center mt-2 shadow-[0_7px_7px_rgba(0,0,0,0.16)] overflow-hidden">
+        <div class="border-x-[4px] border-accentPurple h-full flex items-center justify-start md:w-[60%] overflow-hidden relative w-full">
+          <div class="flex animate-scroll-left" id="ticker-content">
+            <p class="whitespace-nowrap text-h3 text-accentPurple ticker-text"></p>
+            <p class="whitespace-nowrap text-h3 text-accentPurple ticker-text"></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+{% include 'components/password_overlay.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}

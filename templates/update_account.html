@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Update Account - Savings System{% endblock %}
+
+{% block body %}
+<div id="page-loading" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+  <div class="text-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Loading...</p>
+  </div>
+</div>
+
+<div id="update-page" class="hidden-ui min-h-screen bg-gradient-to-bl from-black via-black via-65% to-accentPurple relative flex items-center justify-center p-4 md:p-6 lg:p-0">
+  <div class="flex flex-col lg:flex-row w-full max-w-[95%] md:max-w-[85%] lg:w-[70%] lg:h-[80vh] rounded-3xl overflow-hidden shadow-2xl bg-gray-800">
+    <div class="hidden md:flex flex-1 relative overflow-hidden min-h-[200px] lg:min-h-0 items-center justify-center">
+      <div class="absolute inset-0 bg-gradient-to-bl from-gray-900 via-gray-800 via-65% to-accentPurple backdrop-blur-2xl border-t border-white/10 shadow-inner"></div>
+      <div class="relative z-10 flex items-center justify-center">
+        <img id="panel-icon" src="" alt="" class="w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 object-cover drop-shadow-lg rounded-full" />
+      </div>
+    </div>
+    <div class="flex-1 bg-gradient-to-br from-gray-100 to-white flex items-center justify-center p-6 md:p-8 lg:p-10 border-4 md:border-[10px] border-background rounded-3xl min-h-[500px]" style="border-color: hsl(var(--background))">
+      <div class="w-full max-w-xs sm:max-w-sm md:max-w-md space-y-3 md:space-y-4 lg:space-y-2">
+        <div class="flex md:hidden items-center gap-3 mb-4">
+          <img id="mobile-icon" src="" alt="" class="w-12 h-12 object-cover drop-shadow-lg rounded-full" />
+          <div>
+            <h1 class="text-xl font-bold text-foreground">Update Account</h1>
+            <p class="text-sm text-muted-foreground" style="color: hsl(var(--muted-foreground))">Modify your account</p>
+          </div>
+        </div>
+        <div class="hidden md:block text-center">
+          <h1 class="text-h2 text-foreground">Update Account</h1>
+          <p class="text-body text-muted-foreground" style="color: hsl(var(--muted-foreground))">Modify your account information</p>
+        </div>
+        <div class="flex flex-col lg:flex-row justify-center items-stretch gap-6">
+          <div class="flex-1 space-y-4">
+            <div>
+              <label class="text-body font-medium mb-3 block">Transaction Type</label>
+              <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <button type="button" id="btn-add" class="flex-1 rounded-lg text-sm md:text-body font-semibold transition-all py-3 bg-green-600 hover:bg-green-700 text-white">
+                  <span class="text-lg md:text-xl mr-1">+</span> Add Money
+                </button>
+                <button type="button" id="btn-subtract" class="flex-1 rounded-lg text-sm md:text-body font-semibold transition-all py-3 bg-gray-200 hover:bg-gray-300 text-gray-700">
+                  <span class="text-lg md:text-xl mr-1">-</span> Subtract Money
+                </button>
+              </div>
+            </div>
+            <div>
+              <label for="accountName" class="text-body font-medium">Source</label>
+              <input id="accountName" type="text" class="flex h-10 w-full rounded-lg border-2 border-gray-200 focus:border-accentPurple px-3 py-2 mt-1 disabled:opacity-60 disabled:cursor-not-allowed" />
+            </div>
+            <div class="space-y-2">
+              <label for="amount" class="text-body font-medium">Amount <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <input id="amount" type="text" placeholder="e.g., 50000 or 50000.50" required
+                  class="flex h-10 w-full rounded-lg border-2 border-gray-200 focus:border-accentPurple px-3 py-2 pr-12" />
+                <button type="button" id="toggle-amount-visibility" class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-gray-100">
+                  <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                  <svg id="icon-eye" class="hidden-ui" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label for="note" class="text-body font-medium">Note/Description <span class="text-muted-foreground text-sm">(Optional)</span></label>
+              <input id="note" type="text" placeholder="Add a note or description..." class="flex h-10 w-full rounded-lg border-2 border-gray-200 focus:border-accentPurple px-3 py-2" />
+            </div>
+            <div class="space-y-2">
+              <label for="dateTime" class="text-body font-medium">Date & Time</label>
+              <input id="dateTime" type="datetime-local" class="flex h-10 w-full rounded-lg border-2 border-gray-200 focus:border-accentPurple px-3 py-2" />
+              <p class="text-xs text-muted-foreground" style="color: hsl(var(--muted-foreground))">Auto-generated, but you can override manually</p>
+            </div>
+          </div>
+          <div class="flex flex-row lg:flex-col items-center justify-center gap-3 lg:gap-6 w-full lg:w-auto lg:max-w-[180px] pt-4 lg:pt-0 lg:-translate-y-2">
+            <a href="/" class="flex-1 lg:flex-none lg:w-full rounded-lg border-2 border-gray-300 hover:border-gray-400 inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium bg-white">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Back
+            </a>
+            <button type="button" id="save-btn" class="flex-1 lg:flex-none lg:w-full rounded-lg bg-accentPurple hover:bg-accentPurple/90 text-white disabled:opacity-50 inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span id="save-label">Save Changes</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.PAGE_SOURCE = {{ source|tojson }};
+  window.ICON_URLS = {
+    Cooperative: {{ url_for('static', filename='assets/cooperative.avif')|tojson }},
+    PiggyVest: {{ url_for('static', filename='assets/piggyvest.webp')|tojson }},
+    OPay: {{ url_for('static', filename='assets/opay.png')|tojson }},
+  };
+</script>
+<script src="{{ url_for('static', filename='js/update-account.js') }}"></script>
+{% endblock %}
